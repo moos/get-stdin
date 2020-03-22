@@ -64,17 +64,17 @@ barfoo
     - `getStdin.CTRL_Z` - Ctrl-z (ASCII 26)
     - `'*'` - Use both Ctrl-d and Ctrl-z
 
-	```shell
- (win) c:\> node example.js
- foobar
- ^z
- # => foobar
- ```
- ```bash
- $ node example.js
- foobar^d^d
- # => foobar
- ```
+```shell
+(win) c:\> node example.js
+foobar
+^z
+# => foobar
+```
+```bash
+$ node example.js
+foobar^d^d
+# => foobar
+```
 
 ## Moos Fork
 

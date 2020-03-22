@@ -23,7 +23,7 @@
     "require": [
       "esm"
     ],
-    "timeout": "3s"
+    "timeout": "8s"
   },
   "keywords": [
     "std",
