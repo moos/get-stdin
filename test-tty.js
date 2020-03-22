@@ -1,5 +1,5 @@
-import getStdin from '.';
 import {serial as test, beforeEach} from 'ava';
+import getStdin from '.';
 
 process.stdin.isTTY = true;
 
