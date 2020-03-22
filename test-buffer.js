@@ -1,6 +1,6 @@
-import {serial as test} from 'ava';
-import delay from 'delay';
 import getStdin from '.';
+import delay from 'delay';
+import {serial as test} from 'ava';
 
 test('get stdin', async t => {
 	process.stdin.isTTY = false;

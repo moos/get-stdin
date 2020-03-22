@@ -1,6 +1,6 @@
-import {serial as test, beforeEach} from 'ava';
-import delay from 'delay';
 import getStdin from '.';
+import delay from 'delay';
+import {serial as test, beforeEach} from 'ava';
 
 beforeEach(() => {
 	process.stdin.removeAllListeners();
@@ -20,5 +20,5 @@ test('get stdin', async t => {
 
 test('get empty string when no stdin', async t => {
 	process.stdin.isTTY = true;
-	t.is(await getStdin(), '');
+	t.is(await getStdin({tty: false}), '');
 });

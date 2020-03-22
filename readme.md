@@ -18,8 +18,7 @@ $ npm install get-stdin-with-tty
 const getStdin = require('get-stdin-with-tty');
 
 (async () => {
-	console.log(await getStdin({ tty: true }));
-	//=> 'unicorns'
+	console.log(await getStdin());
 })();
 ```
 
@@ -32,25 +31,25 @@ unicorns
 
 Both methods returns a promise that is resolved when the `end` event fires on the `stdin` stream, indicating that there is no more data to be read.
 
-### getStdin([options])
+### getStdin(options) ← Promise&lt;String&gt;
 
 Get `stdin` as a `string`.
 
 In a TTY context, a promise that resolves to an empty string is returned, unless `options.tty` or `getStdin.tty` is true.
 
-### getStdin.buffer()
+### getStdin.buffer()  ← Promise&lt;Buffer&gt;
 
 Get `stdin` as a `Buffer`.
 
 In a TTY context, a promise that resolves to an empty `Buffer` is returned.
 
-### getStdin.tty = true/false
+### Options / Settings
 
-Set global TTY handling.  When true, accepts input from TTY until a new line beginning with Ctrl-d or Ctrl-z (ASCII 04 and 26) is entered. (default = `true`)
+- `tty` | `getStdin.tty` (Boolean) -
+   Set global TTY handling.  When true, accepts input from TTY until a new line beginning with Ctrl-d or Ctrl-z is entered.  Double Ctrl-d [anywhere in the line](https://stackoverflow.com/a/21261742/302177) also ends the stream. (Default = `true`)
 
-When enabled for the example above:
-
-```
+   When enabled for the example above:
+   ```
 $ node example.js
 foobar
 barfoo
@@ -60,6 +59,22 @@ foobar
 barfoo
 ```
 
+- `EOF` | `getStdin.EOF` (String) - The end-of-file (aka [EOT](https://en.wikipedia.org/wiki/End-of-Transmission_character)) character to use to signal end of stream.  Defaults to Ctrl-d on \*nix and cygwin, and Ctrl-z on Windows.  Acceptable values:
+    - `getStdin.CTRL_D` - Ctrl-d (ASCII 04)
+    - `getStdin.CTRL_Z` - Ctrl-z (ASCII 26)
+    - `'*'` - Use both Ctrl-d and Ctrl-z
+		```shell
+ (win) c:\> node example.js
+ foobar
+ ^z
+ # => foobar
+ ```
+ ```bash
+ $ node example.js
+ foobar^d^d
+ # => foobar
+ ```
+
 ## Moos Fork
 
 The [moos fork](https://github.com/moos/get-stdin) includes support for reading stdin from TTY by default.
@@ -67,6 +82,11 @@ The [moos fork](https://github.com/moos/get-stdin) includes support for reading 
 ## Related
 
 - [get-stream](https://github.com/sindresorhus/get-stream) - Get a stream as a string or buffer
+
+## Change log
+
+- 6.0.0 - `tty` option is now defaulted to `true`. Double Ctrl-d in middle of line also ends stream.
+- 5.0.2 - Initial fork.
 
 ## License
 

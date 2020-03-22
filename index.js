@@ -1,9 +1,39 @@
 'use strict';
-const {stdin} = process;
+const {
+	stdin,
+	platform,
+	env
+} = process;
+const CTRL_D = '\u0004';
+const CTRL_Z = '\u001A';
 
-module.exports = options => {
+const getStdin = (options = {}) => {
 	let result = '';
-	let tty = (options && 'tty' in options) ? options.tty : module.exports.tty;
+	let tty = ('tty' in options) ? options.tty : getStdin.tty;
+	const EOF = options.EOF || getStdin.EOF;
+
+	// In TTY mode, handle ^z or ^d appended after the input
+	const beforeEOF = (chunk, eof) => {
+		let end = chunk.indexOf(eof);
+
+		// Single EOF at beginning of line
+		if (end === 0) {
+			return true;
+		}
+
+		// EOF anywhere and win32 -- eats the input.
+		if (eof === CTRL_Z) {
+			return env > 0;
+		}
+
+		// Double EOF in middle of line (*nix)
+		end = chunk.indexOf(eof + eof);
+		if (end < 0) {
+			return false;
+		}
+
+		return chunk.slice(0, end);
+	};
 
 	return new Promise(resolve => {
 		if (stdin.isTTY && !tty) {
@@ -19,9 +49,14 @@ module.exports = options => {
 
 			while ((chunk = stdin.read())) {
 				if (tty) {
-					const chunkStart = beforeEOF(chunk);
+					const chunkStart = EOF === '*' ?
+						beforeEOF(chunk, CTRL_D) || beforeEOF(chunk, CTRL_Z) :
+						beforeEOF(chunk, EOF);
 					if (chunkStart) {
-						result += chunkStart;
+						if (chunkStart !== true) {
+							result += chunkStart;
+						}
+
 						return stdin.emit('end');
 					}
 				}
@@ -31,12 +66,12 @@ module.exports = options => {
 		});
 
 		stdin.on('end', () => {
-			resolve(result);
+			resolve(result);// + ` ${result.length}`);
 		});
 	});
 };
 
-module.exports.buffer = () => {
+getStdin.buffer = () => {
 	const result = [];
 	let length = 0;
 
@@ -61,18 +96,10 @@ module.exports.buffer = () => {
 	});
 };
 
-// Disable tty for backward compatibility
-module.exports.tty = false;
+getStdin.tty = true;
+getStdin.EOF = platform === 'win32' && env.TERM !== 'cygwin' ? CTRL_Z : CTRL_D;
 
-// In TTY mode, handle ^z or ^d appended after the input
-function beforeEOF(chunk) {
-	let EOF = chunk.indexOf('\u0004');
-	if (EOF < 0) {
-		EOF = chunk.indexOf('\u001A');
-		if (EOF < 0) {
-			return;
-		}
-	}
+getStdin.CTRL_D = CTRL_D;
+getStdin.CTRL_Z = CTRL_Z;
 
-	return chunk.slice(0, EOF);
-}
+module.exports = getStdin;
