@@ -1,44 +1,24 @@
-import test from 'ava';
-import bufferEquals from 'buffer-equals';
-import fn from './';
+import {serial as test, beforeEach} from 'ava';
+import delay from 'delay';
+import getStdin from '.';
 
-test.beforeEach(() => {
+beforeEach(() => {
 	process.stdin.removeAllListeners();
 });
 
-test.serial('get stdin', async t => {
+test('get stdin', async t => {
 	process.stdin.isTTY = false;
+	const promise = getStdin();
 
-	setImmediate(() => {
-		process.stdin.push('unicorns');
-		process.stdin.emit('end');
-	});
-
-	t.is((await fn()).trim(), 'unicorns');
-});
-
-test.serial('get empty string when no stdin', async t => {
-	process.stdin.isTTY = true;
-	t.is(await fn(), '');
-});
-
-test.serial('get stdin as a buffer', t => {
-	t.plan(2);
-	process.stdin.isTTY = false;
-	const promise = fn.buffer().then(data => {
-		t.true(bufferEquals(data, new Buffer('unicorns-foobar')));
-		t.is(data.toString().trim(), 'unicorns-foobar');
-	});
-
-	process.stdin.push('unicorns');
-	process.stdin.push(new Buffer('-foobar'));
+	process.stdin.push('uni');
+	process.stdin.push('corns');
+	await delay(1);
 	process.stdin.emit('end');
 
-	return promise;
+	t.is((await promise).trim(), 'unicorns');
 });
 
-test.serial('get empty buffer when no stdin', async t => {
+test('get empty string when no stdin', async t => {
 	process.stdin.isTTY = true;
-
-	t.true(bufferEquals(await fn.buffer(), new Buffer('')));
+	t.is(await getStdin(), '');
 });

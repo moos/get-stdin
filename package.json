@@ -1,6 +1,6 @@
 {
   "name": "get-stdin-with-tty",
-  "version": "5.0.2",
+  "version": "6.0.0",
   "description": "Get stdin as a string or buffer from pipe or TTY",
   "license": "MIT",
   "repository": "moos/get-stdin",
@@ -10,14 +10,20 @@
     "url": "sindresorhus.com"
   },
   "engines": {
-    "node": ">=0.12.0"
+    "node": ">=8"
   },
   "scripts": {
-    "test": "xo && ava --verbose test.js && ava --verbose test-tty.js && echo unicorns | node test-real.js"
+    "test": "xo && ava --verbose test.js test-buffer.js && ava --verbose test-tty.js && echo unicorns | node test-real.js && tsd"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
+  "ava": {
+    "require": [
+      "esm"
+    ]
+  },
   "keywords": [
     "std",
     "stdin",
@@ -26,14 +32,18 @@
     "buffer",
     "stream",
     "process",
-    "read"
+    "read",
+    "tty"
   ],
   "devDependencies": {
-    "ava": "^0.9.0",
-    "buffer-equals": "^1.0.3",
+    "@types/node": "^13.9.2",
+    "ava": "^3.5.0",
+    "delay": "^4.3.0",
+    "esm": "3.2.25",
+    "tsd": "^0.11.0",
     "xo": "*"
   },
-  "contributors":[
+  "contributors": [
     "Moos <mooster@42at.com> (http://github.com/moos)"
   ]
 }

@@ -1,46 +1,51 @@
-import test from 'ava';
-import fn from './';
+import {serial as test, beforeEach} from 'ava';
+import getStdin from '.';
 process.stdin.isTTY = true;
 
-test.beforeEach(() => {
+beforeEach(() => {
 	process.stdin.removeAllListeners();
 });
 
-test.serial('get stdin in TTY mode with ^d', async t => {
-	setImmediate(() => {
-		process.stdin.push('unicorn');
-		process.stdin.push('\u0004\n');
-	});
+test('get stdin in TTY mode with ^d', async t => {
+	const promise = getStdin({tty: true});
 
-	t.is(await fn({tty: true}), 'unicorn');
+	process.stdin.push('uni');
+	process.stdin.push('corn');
+	process.stdin.push('\u0004');
+
+	t.is(await promise, 'unicorn');
 });
 
-test.serial('get stdin in TTY mode with ^z', async t => {
-	setImmediate(() => {
-		process.stdin.push('unicorn');
-		process.stdin.push('\u001a\n');
-	});
+test('get stdin in TTY mode with ^z', async t => {
+	const promise = getStdin({tty: true});
 
-	t.is(await fn({tty: true}), 'unicorn');
+	process.stdin.push('uni');
+	process.stdin.push('corn\n');
+	process.stdin.push('\u001A\n');
+
+	t.is(await promise, 'unicorn\n');
 });
 
-test.serial('get stdin in TTY mode using global tty', async t => {
-	setImmediate(() => {
-		process.stdin.push('unicorn');
-		process.stdin.push('\u0004\n');
-	});
+test('get stdin in TTY mode using global tty', async t => {
+	getStdin.tty = true;
+	const promise = getStdin();
 
-	fn.tty = true;
-	t.is(await fn(), 'unicorn');
+	process.stdin.push('uni');
+	process.stdin.push('corn');
+	process.stdin.push('\u0004');
+
+	t.is(await promise, 'unicorn');
 });
 
-test.serial('get empty string in non-TTY mode with option override', async t => {
-	setImmediate(() => {
-		process.stdin.push('unicorn');
-		process.stdin.push('\u0004\n');
-		process.stdin.emit('end');
-	});
+test('get empty string in non-TTY mode with option override', async t => {
+	getStdin.tty = true;
+	const promise = getStdin({tty: false});
 
-	fn.tty = true;
-	t.is(await fn({tty: false}), '');
+	process.stdin.push('uni');
+	process.stdin.push('corn');
+	process.stdin.push('\u0004');
+	process.stdin.emit('end');
+
+	getStdin.tty = true;
+	t.is(await promise, '');
 });

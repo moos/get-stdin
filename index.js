@@ -1,65 +1,78 @@
 'use strict';
-var stdin = process.stdin;
+const {stdin} = process;
 
-module.exports = function (opt) {
-	var ret = '';
-	var tty = (opt && 'tty' in opt) ? opt.tty : module.exports.tty;
+module.exports = options => {
+	let result = '';
+	let tty = (options && 'tty' in options) ? options.tty : module.exports.tty;
 
-	return new Promise(function (resolve) {
+	return new Promise(resolve => {
 		if (stdin.isTTY && !tty) {
-			resolve(ret);
+			resolve(result);
 			return;
 		}
+
 		tty = stdin.isTTY && tty;
 		stdin.setEncoding('utf8');
 
-		stdin.on('readable', function () {
-			var chunk;
+		stdin.on('readable', () => {
+			let chunk;
+
 			while ((chunk = stdin.read())) {
-				if (tty && handleTTY(chunk)) {
-					return;
+				if (tty) {
+					const chunkStart = beforeEOF(chunk);
+					if (chunkStart) {
+						result += chunkStart;
+						return stdin.emit('end');
+					}
 				}
-				ret += chunk;
+
+				result += chunk;
 			}
 		});
 
-		stdin.on('end', function () {
-			resolve(ret);
+		stdin.on('end', () => {
+			resolve(result);
 		});
 	});
 };
 
-module.exports.buffer = function () {
-	var ret = [];
-	var len = 0;
+module.exports.buffer = () => {
+	const result = [];
+	let length = 0;
 
-	return new Promise(function (resolve) {
+	return new Promise(resolve => {
 		if (stdin.isTTY) {
-			resolve(new Buffer(''));
+			resolve(Buffer.concat([]));
 			return;
 		}
 
-		stdin.on('readable', function () {
-			var chunk;
+		stdin.on('readable', () => {
+			let chunk;
 
 			while ((chunk = stdin.read())) {
-				ret.push(new Buffer(chunk));
-				len += chunk.length;
+				result.push(chunk);
+				length += chunk.length;
 			}
 		});
 
-		stdin.on('end', function () {
-			resolve(Buffer.concat(ret, len));
+		stdin.on('end', () => {
+			resolve(Buffer.concat(result, length));
 		});
 	});
 };
 
-// disable tty for backward compatibility
+// Disable tty for backward compatibility
 module.exports.tty = false;
 
-// in TTY mode, handle line beginning with ^z or ^d
-function handleTTY(chunk) {
-	var c = chunk.charCodeAt(0);
-	return (c === 4 || c === 26) && stdin.emit('end');
-}
+// In TTY mode, handle ^z or ^d appended after the input
+function beforeEOF(chunk) {
+	let EOF = chunk.indexOf('\u0004');
+	if (EOF < 0) {
+		EOF = chunk.indexOf('\u001A');
+		if (EOF < 0) {
+			return;
+		}
+	}
 
+	return chunk.slice(0, EOF);
+}
