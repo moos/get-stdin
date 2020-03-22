@@ -3,7 +3,7 @@
   "version": "6.0.0",
   "description": "Get stdin as a string or buffer from pipe or TTY",
   "license": "MIT",
-  "repository": "moos/get-stdin",
+  "repository": "moos/get-stdin-with-tty",
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
@@ -44,6 +44,7 @@
     "xo": "*"
   },
   "contributors": [
-    "Moos <mooster@42at.com> (http://github.com/moos)"
+    "Moos <mooster@42at.com> (http://github.com/moos)",
+    "prantlf (https://github.com/prantlf)"
   ]
 }

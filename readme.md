@@ -1,6 +1,6 @@
 # get-stdin-with-tty
 
-[![NPM version](https://img.shields.io/npm/v/get-stdin.svg)](https://www.npmjs.com/package/get-stdin-with-tty)
+[![NPM version](https://img.shields.io/npm/v/get-stdin-with-tty.svg)](https://www.npmjs.com/package/get-stdin-with-tty)
 [![Build Status](https://travis-ci.org/moos/get-stdin.svg?branch=master)](https://travis-ci.org/moos/get-stdin)
 
 > Get [stdin](https://nodejs.org/api/process.html#process_process_stdin) as a string or buffer
@@ -50,7 +50,7 @@ Set global TTY handling.  When true, accepts input from TTY until a new line beg
 
 When enabled for the example above:
 
-``` 
+```
 $ node example.js
 foobar
 barfoo
