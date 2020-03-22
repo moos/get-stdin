@@ -1,7 +1,7 @@
 # get-stdin-with-tty
 
 [![NPM version](https://img.shields.io/npm/v/get-stdin-with-tty.svg)](https://www.npmjs.com/package/get-stdin-with-tty)
-[![Build Status](https://travis-ci.org/moos/get-stdin.svg?branch=master)](https://travis-ci.org/moos/get-stdin)
+[![Build Status](https://travis-ci.org/moos/get-stdin-with-tty.svg?branch=master)](https://travis-ci.org/github/moos/get-stdin-with-tty)
 
 > Get [stdin](https://nodejs.org/api/process.html#process_process_stdin) as a string or buffer
 
