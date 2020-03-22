@@ -59,10 +59,11 @@ foobar
 barfoo
 ```
 
-- `EOF` | `getStdin.EOF` (String) - The end-of-file (aka [EOT](https://en.wikipedia.org/wiki/End-of-Transmission_character)) character to use to signal end of stream.  Defaults to Ctrl-d on \*nix and cygwin, and Ctrl-z on Windows.  Acceptable values:
+- `EOF` | `getStdin.EOF` (String) - The end-of-file (aka [EOT](https://en.wikipedia.org/wiki/End-of-Transmission_character)) character to use to signal end of stream.  Defaults to **Ctrl-d** on \*nix and cygwin, and **Ctrl-z** on Windows.  Acceptable values:
     - `getStdin.CTRL_D` - Ctrl-d (ASCII 04)
     - `getStdin.CTRL_Z` - Ctrl-z (ASCII 26)
     - `'*'` - Use both Ctrl-d and Ctrl-z
+
 	```shell
  (win) c:\> node example.js
  foobar

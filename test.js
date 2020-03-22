@@ -1,6 +1,6 @@
 import {serial as test, beforeEach} from 'ava';
-import getStdin from '.';
 import delay from 'delay';
+import getStdin from '.';
 
 beforeEach(() => {
 	process.stdin.removeAllListeners();
