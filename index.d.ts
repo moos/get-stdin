@@ -3,8 +3,14 @@
 interface Options {
 	/**
 	Enables reading from TTY, which can be anded by ^d or ^z.
+	@default true
 	*/
 	tty?: boolean;
+
+	/**
+	Define EOF character
+	*/
+	EOF?: String;
 }
 
 declare const getStdin: {
@@ -37,6 +43,9 @@ declare const getStdin: {
 	@returns A promise that is resolved when the `end` event fires on the `stdin` stream, indicating that there is no more data to be read. In a TTY context, an empty `Buffer` is returned.
 	*/
 	buffer(): Promise<Buffer>;
+
+	CTRL_D: String;
+	CTRL_Z: String;
 };
 
 export = getStdin;
