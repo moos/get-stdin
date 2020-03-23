@@ -4,6 +4,7 @@ import getStdin from '.';
 process.stdin.isTTY = true;
 
 beforeEach(() => {
+	process.stdin.pause();
 	process.stdin.removeAllListeners();
 });
 
@@ -12,14 +13,17 @@ test('get stdin in TTY mode with ^d', async t => {
 	process.stdin.push('uni');
 	process.stdin.push('corn');
 	process.stdin.push(getStdin.CTRL_D);
+	process.stdin.resume();
 	t.is(await promise, 'unicorn');
 });
 
 test('get stdin in TTY mode with TWO ^d in middle', async t => {
 	const promise = getStdin({tty: true, EOF: getStdin.CTRL_D});
+
 	process.stdin.push('uni');
 	process.stdin.push('corn');
 	process.stdin.push('foo' + getStdin.CTRL_D + getStdin.CTRL_D);
+	process.stdin.resume();
 	t.is(await promise, 'unicornfoo');
 });
 
@@ -28,6 +32,7 @@ test('get stdin in TTY mode with ^z', async t => {
 	process.stdin.push('uni');
 	process.stdin.push('corn\n');
 	process.stdin.push(getStdin.CTRL_Z);
+	process.stdin.resume();
 	t.is(await promise, 'unicorn\n');
 });
 
@@ -37,6 +42,7 @@ test('get stdin in TTY mode with TWO ^z in middle', async t => {
 	process.stdin.push('corn\n');
 	process.stdin.push('foo' + getStdin.CTRL_Z + getStdin.CTRL_Z); // Does not end stream!
 	process.stdin.push(getStdin.CTRL_Z);
+	process.stdin.resume();
 	t.is(await promise, 'unicorn\nfoo' + getStdin.CTRL_Z + getStdin.CTRL_Z);
 });
 
@@ -45,6 +51,7 @@ test('get stdin in TTY mode with "*" and ^d', async t => {
 	process.stdin.push('uni');
 	process.stdin.push('corn');
 	process.stdin.push(getStdin.CTRL_D);
+	process.stdin.resume();
 	t.is(await promise, 'unicorn');
 });
 
@@ -53,6 +60,7 @@ test('get stdin in TTY mode with "*" and ^z', async t => {
 	process.stdin.push('uni');
 	process.stdin.push('corn\n');
 	process.stdin.push(getStdin.CTRL_Z);
+	process.stdin.resume();
 	t.is(await promise, 'unicorn\n');
 });
 
@@ -64,7 +72,7 @@ test('get stdin in TTY mode using global tty', async t => {
 	process.stdin.push('uni');
 	process.stdin.push('corn');
 	process.stdin.push(getStdin.CTRL_D);
-
+	process.stdin.resume();
 	t.is(await promise, 'unicorn');
 });
 

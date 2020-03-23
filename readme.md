@@ -49,32 +49,32 @@ In a TTY context, a promise that resolves to an empty `Buffer` is returned.
    Set global TTY handling.  When true, accepts input from TTY until a new line beginning with Ctrl-d or Ctrl-z is entered.  Double Ctrl-d [anywhere in the line](https://stackoverflow.com/a/21261742/302177) also ends the stream. (Default = `true`)
 
    When enabled for the example above:
-```
-$ node example.js
-foobar
-barfoo
-^d
-// =>
-foobar
-barfoo
-```
+	```
+	$ node example.js
+	foobar
+	barfoo
+	^d
+	// =>
+	foobar
+	barfoo
+	```
 
 - `EOF` | `getStdin.EOF` (String) - The end-of-file (aka [EOT](https://en.wikipedia.org/wiki/End-of-Transmission_character)) character to use to signal end of stream.  Defaults to **Ctrl-d** on \*nix and cygwin, and **Ctrl-z** on Windows.  Acceptable values:
     - `getStdin.CTRL_D` - Ctrl-d (ASCII 04)
     - `getStdin.CTRL_Z` - Ctrl-z (ASCII 26)
     - `'*'` - Use both Ctrl-d and Ctrl-z
 
-```shell
-(win) c:\> node example.js
-foobar
-^z
-# => foobar
-```
-```bash
-$ node example.js
-foobar^d^d
-# => foobar
-```
+	```shell
+	(win) c:\> node example.js
+	foobar
+	^z
+	# => foobar
+	```
+	```bash
+	$ node example.js
+	foobar^d^d
+	# => foobar
+	```
 
 ## Moos Fork
 
